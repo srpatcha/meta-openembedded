@@ -1,0 +1,29 @@
+From 46f0ea3eb35e8d0d33e88298a9e7c3dbdd49ec17 Mon Sep 17 00:00:00 2001
+From: Gyorgy Sarvari <skandigraun@gmail.com>
+Date: Thu, 23 Apr 2026 09:14:40 +0200
+Subject: [PATCH] use qemuwrapper to run cross-compiled binary
+
+The build process executes a compiled binary to get some details,
+however this results in a failure in case of cross-compiling.
+
+Run it with qemuwrapper, that is created in the recipe.
+
+Upstream-Status: Inappropriate [cross-compile specific]
+Signed-off-by: Gyorgy Sarvari <skandigraun@gmail.com>
+---
+ scripts/mbedtls_framework/c_build_helper.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/mbedtls_framework/c_build_helper.py b/scripts/mbedtls_framework/c_build_helper.py
+index 59bb326e2..5c4c211ee 100644
+--- a/tf-psa-crypto/framework/scripts/mbedtls_framework/c_build_helper.py
++++ b/tf-psa-crypto/framework/scripts/mbedtls_framework/c_build_helper.py
+@@ -169,7 +169,7 @@ def get_c_expression_values(
+                              .format(caller, c_name))
+         else:
+             os.remove(c_name)
+-        output = subprocess.check_output([exe_name])
++        output = subprocess.check_output(['../../../qemuwrapper', exe_name])
+         return output.decode('ascii').strip().split('\n')
+     finally:
+         remove_file_if_exists(exe_name)
